@@ -18,9 +18,9 @@
 
 
 ### CSS & HTML:
-+ We are using [Adobe Color Palette - Oregon Coast](https://color.adobe.com/Oregon-Coast-color-theme-189428/) -- THIS IS TBD
++ We are using [Adobe Color Palette - Ocean Sunset](https://color.adobe.com/Ocean-Sunset-color-theme-46355/)
 + Other complimentary colors from Adobe include:
-1. #382513 - Brown // TBD
-2. #363942 - Gray // TBD
-3. #000000 - Black // TBD
+1. #000000 - Black
+2. // TBD
+3. // TBD
 + THIS IS TBD.
