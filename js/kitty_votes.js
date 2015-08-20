@@ -31,18 +31,16 @@ var photoArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8
 
 // Photo Tracker Constructor
 var Tracker = function( ) {
-	// this.leftPhoto = leftPhoto;
-	// this.rightPhoto = rightPhoto;
 	// Do we need any more variables?
-}
+};
 
-var votePhotos = new Tracker();
+var trackVote = new Tracker();
 
 // Generate a random number to select an images from photoArray
 Tracker.prototype.getRandomInt = function(numPhotos) {
   return Math.floor(Math.random() * numPhotos);
 };
-console.log(votePhotos.getRandomInt(14));
+console.log(trackVote.getRandomInt(14));
 
 Tracker.prototype.pickRandomPhoto = function () {
 	console.log(this.getRandomInt(photoArray.length));
@@ -50,7 +48,6 @@ Tracker.prototype.pickRandomPhoto = function () {
 };
 
 Tracker.prototype.displayPhotos = function () {
-	// get 1st random #; get 2nd random #
 	// display the random photos... accessing the photoArray[ ]
 	var random = this.pickRandomPhoto();
 	var photo = '<img src="' + photoArray[random].path + '"/>';
@@ -58,7 +55,6 @@ Tracker.prototype.displayPhotos = function () {
 };
 
 Tracker.prototype.photoCompare = function (){
-
 	var photoL = this.displayPhotos();
 	var photoR = this.displayPhotos();
 	while(photoL == photoR){
@@ -69,50 +65,49 @@ Tracker.prototype.photoCompare = function (){
 	$('#photoR').html(photoR);
 };
 
-// This highlights the winning photo when clicked
-Tracker.prototype.highlight = function (){
-	//highlight photo after it's clicked
-};
-
-Tracker.prototype.receiveVote = function (){
+Tracker.prototype.receiveVote = function(){
 	var photoL = document.getElementById('photoL');
 	var photoR = document.getElementById('photoR');
 
 	photoL.addEventListener('click', function(e){
-		console.dir(e.target.attributes[0].value);
-		votePhotos.addVote(e.target.attributes[0].value);
-		votePhotos.makeChart();
+		console.log(e.target.src);
+		trackVote.addVote(e.target.src);
+		trackVote.kittyWin();
+		console.log(photoArray);
 	});
 
 	photoR.addEventListener('click', function(e){
-		console.dir(e.target.attributes[0].value);
-		votePhotos.addVote(e.target.attributes[0].value);
-		votePhotos.makeChart();
+		console.log(e.target.src);
+		trackVote.addVote(e.target.src);
+		trackVote.kittyWin();
+		console.log(photoArray);
 	});
 };
 
 Tracker.prototype.addVote = function(select){
+	var url = select.slice(46, 100);
 	for(var i=0; i < photoArray.length; i++){
-		if(select === photoArray[i].path){
-			photoArray[i].votes++;
+		if(url === photoArray[i].path){
+			photoArray[i].votes += 1;
 			console.log(photoArray[i].votes);
 			return;
 			}
 		}
 };
+var vts;
 
 Tracker.prototype.makeChart = function(){
 	var photoL = document.getElementById('photoL');
 	var photoR = document.getElementById('photoR');
 	var pathL = photoL.childNodes[0].attributes[0].value;
 	var pathR = photoR.childNodes[0].attributes[0].value;
-	var vts = this.getVotes(pathL, pathR);
+	vts = this.getVotes(pathL, pathR);
 	console.dir(photoL);
 	console.log(photoL.childNodes[0].attributes[0].value);
 
 	var ctx = document.getElementById('mychart').getContext('2d');
-	var mychart = new Chart(ctx).Doughnut([{value: vts.votesL, color: 'blue'}, {value: vts.votesR, color: 'red'}]);
-}
+	var mychart = new Chart(ctx).Doughnut([{value: vts.votesR, color: 'red'}, {value: vts.votesL, color: 'blue'}]);
+};
 
 Tracker.prototype.getVotes = function(lPath, rPath){
 	for(var i=0; i < photoArray.length; i++){
@@ -122,8 +117,45 @@ Tracker.prototype.getVotes = function(lPath, rPath){
 	return {votesL: lPath, votesR: rPath};
 };
 
-votePhotos.photoCompare();
-votePhotos.receiveVote();
-votePhotos.makeChart();
+// This highlights the winning photo when clicked
+Tracker.prototype.highlight = function (){
+	if(vts.votesL > vts.votesR){  // how can i bring in votes?
+		// if Left Kitty wins
+		$('#message').text('The LEFT Kitty is Hotter!');
+		$('photoL').addClass('winner');
+	} else if (vts.votesL < vts.votesR){ // FIX THIS
+		// if Right Kitty wins
+		$('#message').text('The RIGHT Kitty is Hotter!');
+		$('photoR').addClass('winner');
+	} else {
+		// No Kitty wins
+		$('#message').text('Bummer. Neither Kitty wins.');
+	}
+};
+
+$('#nextButton').on('click', function(e) {
+	trackVote.waitVote(e);
+});
+
+Tracker.prototype.waitVote = function(){
+	console.log('waiting on user vote.');
+	$('#nextButton').hide();
+	$('#message').text('Pick Your Favorite Kitten! To Vote: Just Click on that Image!');
+	// $('.winner').removeClass('.winner');
+	trackVote.photoCompare();
+	trackVote.receiveVote();
+	trackVote.makeChart();
+};
+
+Tracker.prototype.kittyWin = function(){
+	console.log('we have a winner!');
+	trackVote.makeChart();
+	trackVote.highlight();
+	$('#nextButton').show();
+};
+
+trackVote.displayPhotos();
+trackVote.waitVote();
+
 
 });
