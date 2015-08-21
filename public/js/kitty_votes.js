@@ -5,64 +5,61 @@
 $(document).ready(function() {
 
 // Photo Constructor
-var Photo = function(path) {
-	this.path = path;
+var Photo = function(link) {
+	this.path = link;
 	this.votes = 1;
 };
 
-var photo1 = new Photo('img/kittens/01.jpg');
-var photo2 = new Photo('img/kittens/02.jpg');
-var photo3 = new Photo('img/kittens/03.jpg');
-var photo4 = new Photo('img/kittens/04.jpg');
-var photo5 = new Photo('img/kittens/05.jpg');
-var photo6 = new Photo('img/kittens/06.jpg');
-var photo7 = new Photo('img/kittens/07.jpg');
-var photo8 = new Photo('img/kittens/08.jpg');
-var photo9 = new Photo('img/kittens/09.jpg');
-var photo10 = new Photo('img/kittens/10.jpg');
-var photo11 = new Photo('img/kittens/11.jpg');
-var photo12 = new Photo('img/kittens/12.jpg');
-var photo13 = new Photo('img/kittens/13.jpg');
-var photo14 = new Photo('img/kittens/14.jpg');
+// this global var is an array that will hold all the kitten Photo objects
+var photoArray = [ ];
+var imgurArray = [ ];
 
-// this array whilel hold all the Photo objects
-var photoArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10, photo11, photo12, photo13, photo14];
-// for(var i = 0; i < 14; i++) {
+// incorporating AJAX and JSON into our code to 'GET' kitty pics from external source
+$.ajax({
+     url: 'https://api.imgur.com/3/album/DDoWy.json',
+     method: 'GET',
+     headers: {
+          'Authorization': 'Client-ID 8d7a417fb5ee534'
+     }
+})
+.done(function(res) {
+     imgurArray = res.data.images;
+     console.log(imgurArray);
+
+      for(var i = 0; i < imgurArray.length; i++) {
+          // photoArray[i].path = photoArray[i].link;
+          photoArray[i] = new Photo(imgurArray[i].link);
+      	}
+      	console.log(photoArray);
+     	trackVote.waitVote();
+})
+.fail(function(err) {
+     console.log(err);
+});
+
+function htmlForPhoto( ) {
+var rand = Math.floor(Math.random( ) * photoArray.length + 1);
+     var displayPic = '<img src="' + photoArray[rand].path + '">';
+     return displayPic;
+}
 
 // Photo Tracker Constructor
 var Tracker = function( ) {
-	// Do we need any more variables?
 };
 
 var trackVote = new Tracker();
 
-// Generate a random number to select an images from photoArray
-Tracker.prototype.getRandomInt = function(numPhotos) {
-  return Math.floor(Math.random() * numPhotos);
-};
-console.log(trackVote.getRandomInt(14));
-
-Tracker.prototype.pickRandomPhoto = function () {
-	console.log(this.getRandomInt(photoArray.length));
-	return this.getRandomInt(photoArray.length);
-};
-
-Tracker.prototype.displayPhotos = function () {
-	// display the random photos... accessing the photoArray[ ]
-	var random = this.pickRandomPhoto();
-	var photo = '<img src="' + photoArray[random].path + '"/>';
-	return photo;
-};
-
 Tracker.prototype.photoCompare = function (){
-	var photoL = this.displayPhotos();
-	var photoR = this.displayPhotos();
-	while(photoL == photoR){
-		console.log ("photos are the same");
-		var photoR = this.displayPhotos();
+	var photoLeftHtml = htmlForPhoto();
+	var photoRightHtml = htmlForPhoto();
+	// console.log('photoRightHtml in photoCompare ' + photoRightHtml);
+	while(photoLeftHtml == photoRightHtml){
+		// console.log('photos are the same');
+		var photoRightHtml = htmlForPhoto();
 	}
-	$('#photoL').html(photoL);
-	$('#photoR').html(photoR);
+	// console.log('photos should render next')
+	$('#photoL').html(photoLeftHtml);
+	$('#photoR').html(photoRightHtml);
 };
 
 Tracker.prototype.receiveVote = function(){
@@ -71,39 +68,45 @@ Tracker.prototype.receiveVote = function(){
 
 	photoL.addEventListener('click', function(e){
 		console.log(e.target.src);
+		// console.log('testing line 71');
 		trackVote.addVote(e.target.src);
 		trackVote.kittyWin();
-		console.log(photoArray);
 	});
 
 	photoR.addEventListener('click', function(e){
 		console.log(e.target.src);
 		trackVote.addVote(e.target.src);
 		trackVote.kittyWin();
-		console.log(photoArray);
 	});
 };
 
-Tracker.prototype.addVote = function(select){
-	var url = select.slice(46, 100);
+Tracker.prototype.addVote = function(selected){
 	for(var i=0; i < photoArray.length; i++){
-		if(url === photoArray[i].path){
-			photoArray[i].votes += 1;
-			console.log(photoArray[i].votes);
+		// console.log('selected is ' + selected + ' and is being tested against ' + photoArray[i].path);
+		// console.log('if true, vote for photoArray will increase by 1');
+		if(selected === photoArray[i].path){
+			console.log('photoArray[i].path ' + photoArray[i].path);
+			var temp = null;
+			temp = photoArray[i].votes;
+			console.log('the value of temp ' + temp);
+			temp++;
+			photoArray[i].votes = temp;
+			console.log('the value of temp now ' + temp);
+			console.log('here is the new vote tally for the winner ' + photoArray[i].votes);
 			return;
 			}
 		}
 };
-var vts;
 
+var vts;  // using this to use votes value for hightlight winner
 Tracker.prototype.makeChart = function(){
 	var photoL = document.getElementById('photoL');
 	var photoR = document.getElementById('photoR');
 	var pathL = photoL.childNodes[0].attributes[0].value;
 	var pathR = photoR.childNodes[0].attributes[0].value;
 	vts = this.getVotes(pathL, pathR);
-	console.dir(photoL);
-	console.log(photoL.childNodes[0].attributes[0].value);
+	// console.dir(photoL);
+	// console.log(photoL.childNodes[0].attributes[0].value);
 
 	var ctx = document.getElementById('mychart').getContext('2d');
 	var mychart = new Chart(ctx).Doughnut([{value: vts.votesR, color: 'red'}, {value: vts.votesL, color: 'blue'}]);
@@ -116,26 +119,6 @@ Tracker.prototype.getVotes = function(lPath, rPath){
 	}
 	return {votesL: lPath, votesR: rPath};
 };
-
-// This highlights the winning photo when clicked
-Tracker.prototype.highlight = function (){
-	if(vts.votesL > vts.votesR){  // how can i bring in votes?
-		// if Left Kitty wins
-		$('#message').text('The LEFT Kitty is Hotter!');
-		$('photoL').addClass('winner');
-	} else if (vts.votesL < vts.votesR){ // FIX THIS
-		// if Right Kitty wins
-		$('#message').text('The RIGHT Kitty is Hotter!');
-		$('photoR').addClass('winner');
-	} else {
-		// No Kitty wins
-		$('#message').text('Bummer. Neither Kitty wins.');
-	}
-};
-
-$('#nextButton').on('click', function(e) {
-	trackVote.waitVote(e);
-});
 
 Tracker.prototype.waitVote = function(){
 	console.log('waiting on user vote.');
@@ -154,8 +137,26 @@ Tracker.prototype.kittyWin = function(){
 	$('#nextButton').show();
 };
 
-trackVote.displayPhotos();
-trackVote.waitVote();
+// This highlights the winning photo when clicked
+Tracker.prototype.highlight = function (){
+	if(vts.votesL > vts.votesR){  // how can i bring in votes?
+		// if Left Kitty wins
+		$('#message').text('The LEFT Kitty is Hotter!');
+		$('photoL').addClass('winner');
+	} else if (vts.votesL < vts.votesR){ // FIX THIS
+		// if Right Kitty wins
+		$('#message').text('The RIGHT Kitty is Hotter!');
+		$('photoR').addClass('winner');
+	} else {
+		// No Kitty wins
+		$('#message').text('Bummer. Neither Kitty wins.');
+	}
+};
+
+$('#nextButton').on('click', function() {
+	trackVote.waitVote();
+});
+
 
 
 });
