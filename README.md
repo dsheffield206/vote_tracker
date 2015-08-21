@@ -15,12 +15,11 @@
 + This program also uses AJAX API calls to an external database on Imgur, using JSON, which is where the 14 kitten images live.
 + This program uses Event Listeners to wait for the user input (asynchronous) when they click on an image for the winner and then to render the next battle or contest.
 + Finally, we are appending our array of Kitten data, which will keep track of the path (or URL) of each kitten image and the number of their votes.
++ My original program had all the above functionality, except that it incremented the votes incorrectly and added the value of [i] vs. incrementing the votes by 1. After 2 days of trying to fix the issue, professor Sam Hamm, sent me the GitHut repo for Ryan Sobol (copywright 2015) and suggested that I use his code; so, this program now deploy's Ryan Sobol's app.js.
 
 
 ### CSS & HTML:
-+ We are using [Adobe Color Palette - Ocean Sunset](https://color.adobe.com/Ocean-Sunset-color-theme-46355/)
++ This program uses [Dave Gamache's Skeleton V2.0.4 Syling](http:www.getskeleton.com/)
++ This prorgram uses [Adobe Color Palette - Ocean Sunset](https://color.adobe.com/Ocean-Sunset-color-theme-46355/)
 + Other complimentary colors from Adobe include:
 1. #000000 - Black
-2. // TBD
-3. // TBD
-+ THIS IS TBD.

@@ -3,31 +3,32 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>CutestKittenPageant</title>
+		<title>Hot or Not Kitten Game</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="js/Chart.js"></script>
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
+		<header>
 		<h1><strong>Hot</strong> <b>or Not Kitty?</b></h1>
-			<h3 id="message"><em>Pick Your Favorite Kitten! To Vote: Just Click on that Image!</em></h3>
+		</header>
 
-		<div class="columnL">
-		<div id="photoL"></div>
-		</div>
+		<main>
+			<section id="left"></section>
+    	<canvas id="middle"></canvas>
+    	<section id="right"></section>
+    	<section id="result">
+     		 <h3 id="winner"></h3>
+      	<button id="next">Next battle</button>
+    	</section>
+		</main>
 
-		<div class="canvasChart">
-				<canvas id="mychart" width="300" height="300">
-				</canvas>
-		</div>
-		<div class="columnR">
-		<div id="photoR"></div>
-		</div>
-			<button id="nextButton" type="button">Pick Another Kitty!</button>
+			<script src="js/app.js"></script>
 
-			<script src="js/kitty_votes.js"></script>
-
+		<footer>
+			<h6>&copy 2015 David Sheffield</h6>
+		</footer>
 
 	</body>
 </html>
