@@ -1,0 +1,23 @@
+{
+  "name": "vote_tracker",
+  "version": "1.0.0",
+  "description": "This is a Hot or Not Kitty Voting Game for class",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsheffield206/vote_tracker.git"
+  },
+  "author": "dws",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dsheffield206/vote_tracker/issues"
+  },
+  "homepage": "https://github.com/dsheffield206/vote_tracker#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
