@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/dsheffield206/vote_tracker.git"
   },
-  "author": "dws",
-  "license": "ISC",
+  "author": "David Sheffield",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dsheffield206/vote_tracker/issues"
   },
